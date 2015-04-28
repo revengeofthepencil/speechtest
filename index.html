@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <title>Speech Recognition Test</title>
+    <link rel="stylesheet" href="css/speech-input.css">
+    <style>
+        .si-wrapper input {
+            font-size: 2em;
+            padding: .1em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Speech Recognition Test</h1>
+
+<form id="speechForm">
+    <div class="si-wrapper">
+        <input type="text" class="si-input" placeholder="What's up?">
+        <button class="si-btn">
+            speech input
+            <span class="si-mic"></span>
+            <span class="si-holder"></span>
+        </button>
+    </div>
+
+
+</form>
+
+
+<script src="js/speech-input.js"></script>
+<script>
+    $( document ).ready(function() {
+        // try docs from http://shapeshed.com/html5-speech-recognition-api/
+        // https://github.com/Daniel-Hug/speech-input
+        if (!('webkitSpeechRecognition' in window)) {
+            $('.si-btn').remove()
+            console.log('nope, not talking')
+        } else {
+
+
+            var recognition = new webkitSpeechRecognition();
+            recognition.onresult = function(event) {
+                console.log('done talking')
+                console.log(event)
+            }
+            recognition.start();
+
+        }
+    });
+</script>
+</body>
+</html>
