@@ -1,0 +1,9 @@
+#output {
+	border: 1px solid #999;
+	padding: 10px;
+	width: 500px;
+}
+
+#startMe {
+	margin-right: 10px;
+}

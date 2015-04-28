@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <title>Speech Recognition Test</title>
-    <link rel="stylesheet" href="css/speech-input.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        .si-wrapper input {
-            font-size: 2em;
-            padding: .1em;
-        }
     </style>
 </head>
 <body>
@@ -17,36 +13,70 @@
 <h1>Speech Recognition Test</h1>
 
 <form id="speechForm">
-    <div class="si-wrapper">
-        <input type="text" class="si-input" placeholder="What's up?">
-        <button class="si-btn">
-            speech input
-            <span class="si-mic"></span>
-            <span class="si-holder"></span>
-        </button>
+
+
+    <div id="control">
+        <a href="" id="startMe">start talking</a>
+        <a href="" id="stopme">stop talking</a>
     </div>
 
-
+    <div id="output">
+        Text goes here...
+    </div>
 </form>
 
-
-<script src="js/speech-input.js"></script>
 <script>
+
     $( document ).ready(function() {
-        // try docs from http://shapeshed.com/html5-speech-recognition-api/
-        // https://github.com/Daniel-Hug/speech-input
+        var speechEnabled = true;
+
         if (!('webkitSpeechRecognition' in window)) {
-            $('.si-btn').remove()
-            console.log('nope, not talking')
+            $("#output").text("Sorry, I can't talk to you")
+
         } else {
+            console.log('you can talk')
+            var recognition;
+
+            $("#startMe").click(function(e){
+                e.preventDefault();
+                if (speechEnabled === false) {return}
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = "en-US";
+
+                var finalTranscript = '';
+
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                recognition.onresult = function(event) {
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            var resObj = event.results[i][0]
+                            var transcript = resObj.transcript;
+                            var confidence = resObj.confidence;
+
+                            console.log('confidence = ' + confidence + ', transcript = ' + transcript)
+                            finalTranscript += transcript
+                        }
+                    }
+
+                    $("#output").text(finalTranscript)
+
+                };
+                recognition.start();
+            }) ;
 
 
-            var recognition = new webkitSpeechRecognition();
-            recognition.onresult = function(event) {
-                console.log('done talking')
-                console.log(event)
-            }
-            recognition.start();
+
+            $("#stopme").click(function(e){
+                e.preventDefault();
+                if (speechEnabled === false) {return}
+
+                recognition.stop();
+            })
+
+
+
 
         }
     });
