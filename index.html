@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <title>Speech Recognition Test</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-    </style>
-</head>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <title>Speech Recognition Test</title>
+        <link rel="stylesheet" href="css/style.css">
+        <style>
+        </style>
+    </head>
 <body>
 
 <h1>Speech Recognition Test</h1>
@@ -31,48 +31,53 @@
         var speechEnabled = true;
 
         if (!('webkitSpeechRecognition' in window)) {
+            speechEnabled = false;
             $("#output").text("Sorry, I can't talk to you")
 
         } else {
-            console.log('you can talk')
+            speechEnabled = true;
             var recognition;
 
             $("#startMe").click(function(e){
                 e.preventDefault();
-                if (speechEnabled === false) {return}
-                recognition = new webkitSpeechRecognition();
-                recognition.lang = "en-US";
+                if (speechEnabled === true) {
 
-                var finalTranscript = '';
+                    recognition = new webkitSpeechRecognition();
+                    recognition.lang = "en-US";
 
-                recognition.continuous = true;
-                recognition.interimResults = true;
+                    var finalTranscript = '';
 
-                recognition.onresult = function(event) {
-                    for (var i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            var resObj = event.results[i][0]
-                            var transcript = resObj.transcript;
-                            var confidence = resObj.confidence;
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
 
-                            console.log('confidence = ' + confidence + ', transcript = ' + transcript)
-                            finalTranscript += transcript
+                    recognition.onresult = function(event) {
+                        for (var i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                var resObj = event.results[i][0]
+                                var transcript = resObj.transcript;
+                                var confidence = resObj.confidence;
+
+                                console.log('confidence = ' + confidence + ', transcript = ' + transcript)
+                                finalTranscript += transcript
+                            }
                         }
-                    }
 
-                    $("#output").text(finalTranscript)
+                        $("#output").text(finalTranscript)
 
-                };
-                recognition.start();
+                    };
+                    recognition.start();
+                }
+
             }) ;
 
 
 
             $("#stopme").click(function(e){
                 e.preventDefault();
-                if (speechEnabled === false) {return}
+                if (speechEnabled === true) {
+                    recognition.stop();
+                }
 
-                recognition.stop();
             })
 
 
